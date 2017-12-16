@@ -12,9 +12,9 @@ class RateLimiter
     count = $redis.get(key)
     unless count
       $redis.set(key, 0)
-      $redis.expire(key, time_window) #set expirt time of the key in redis
+      $redis.expire(key, time_window) #set expiry time of the key in redis
     end
-    if count.to_i >= max_request_allowed
+    if count.to_i >= max_request_allowed      
        rate_limit_headers_hash = rate_limit_headers(count, key, time_window)
       [
        429,
@@ -40,6 +40,6 @@ class RateLimiter
 	def rate_limit_headers(count, key, time_window)
 	  ttl = $redis.ttl(key)
 	  time = time_window
-	  { "X-Rate-Limit-Limit": 100, "X-Rate-Limit-Remaining": (100 - count.to_i).to_s, "X-Rate-Limit-Reset": ttl }
+	  { "X-Rate-Limit-Limit" => 100, "X-Rate-Limit-Remaining" => (100 - count.to_i).to_s, "X-Rate-Limit-Reset" => ttl }
 	end
 end
